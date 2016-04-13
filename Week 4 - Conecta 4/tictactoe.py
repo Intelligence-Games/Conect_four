@@ -1,5 +1,5 @@
-from utils import *
 from game import Game
+from utils import *
 
 
 class TicTacToe(Game):

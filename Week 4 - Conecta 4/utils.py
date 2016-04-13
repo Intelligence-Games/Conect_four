@@ -3,7 +3,14 @@
 """
 
 from __future__ import generators
-import operator, math, random, copy, sys, os.path, bisect
+
+import bisect
+import copy
+import math
+import operator
+import os.path
+import random
+import sys
 
 #______________________________________________________________________________
 # Compatibility with Python 2.2 and 2.3
