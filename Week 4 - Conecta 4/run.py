@@ -1,45 +1,19 @@
 import games
 from connectfour import ConnectFour
-from heuristics import random_heuristic, best_direction, best_move_heuristic
+from heuristics import random_heuristic, check_horizontal
 
 # game = games.TicTacToe(h=3,v=3,k=3)
 game = ConnectFour()
 
 state = game.initial
 
-
-def choice_level():
-    global heuristic
-    global depth
-    level = raw_input("Elije la dificultad: 1 -> facil, 2 -> medio, 3 -> dificil: ")
-    if level == '1':
-        heuristic = random_heuristic
-        depth = None
-    elif level == '2':
-        heuristic = best_move_heuristic
-        depth = None
-    else:
-        heuristic = best_move_heuristic
-        depth = 4
-
-
-def choice_turn():
-    global computer
-    choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina: ")
-    computer = 'O' if choice == '0' else 'X'
-
-#
-# choice_level()
-# choice_turn()
-
-computer = "X"
+player = 'X'
 
 while True:
-
     print "Jugador a mover:", game.to_move(state)
     game.display(state)
 
-    if computer == 'O':
+    if player == 'O':
         col_str = raw_input("Movimiento: ")
         coor = int(str(col_str).strip())
         x = coor
@@ -50,15 +24,15 @@ while True:
                 y = lm[1]
 
         state = game.make_move((x, y), state)
-        computer = 'X'
+        player = 'X'
     else:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
         # move = games.alphabeta_full_search(state, game)
-        move = games.alphabeta_search(state, game, d=4, eval_fn=best_move_heuristic)
+        move = games.alphabeta_search(state, game, eval_fn=check_horizontal)
 
         state = game.make_move(move, state)
-        computer = 'O'
+        player = 'O'
     print "-------------------"
     if game.terminal_test(state):
         game.display(state)
