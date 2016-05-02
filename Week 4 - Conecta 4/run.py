@@ -1,6 +1,6 @@
 import games
 from connectfour import ConnectFour
-from heuristics import random_heuristic
+from heuristics import random_heuristic, best_direction
 
 # game = games.TicTacToe(h=3,v=3,k=3)
 game = ConnectFour()
@@ -29,7 +29,7 @@ while True:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
         # move = games.alphabeta_full_search(state, game)
-        move = games.alphabeta_search(state, game, eval_fn=random_heuristic)
+        move = games.alphabeta_search(state, game, eval_fn=best_direction)
 
         state = game.make_move(move, state)
         player = 'O'
