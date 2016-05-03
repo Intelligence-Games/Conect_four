@@ -10,43 +10,42 @@ def random_heuristic(state=None):
 
 def foo_heuristic(state):
     result = 0
-    for columna in range(1, 7):
-        for fila in range(1, 8):
-            if (columna, fila) in state.moves:
-                result += best_direction(tupla=(columna,fila), state=state)
+    for column in range(1, 7):
+        for row in range(1, 8):
+            if (column, row) in state.moves:
+                result += best_direction(tuple=(column, row), state=state)
                 break
     return result
 
 
-def best_direction(tupla=None, state=None):
-    return posibles_horizontales(tupla, state) + posibles_verticales(tupla, state)
-
-def posibles_verticales(tupla, state=None):
-    acumulated_value = 0
-
-    for fila in range(tupla[1], 7):
-        if (tupla[0], fila) in state.moves:
-            acumulated_value += 100
-
-        if state.board.get((tupla[0], fila)) == game.to_move(state):
-            acumulated_value += 1000
-        if state.board.get((tupla[0], fila)) != game.to_move(state):
-            acumulated_value -= 10000
-    return acumulated_value
+def best_direction(tuple, state):
+    return horizontal(tuple, state) + vertical(tuple, state)
 
 
-def posibles_horizontales(tupla, state=None):
-    acumulated_value = 0
-    num = tupla[0]
-    for columna in range(tupla[0], 7):
-        if (columna, tupla[1]) in state.moves:
-            acumulated_value += 100
-        if state.board.get((columna, tupla[1])) == game.to_move(state):
-            acumulated_value += 1000
-        if state.board.get((columna, tupla[1])) != game.to_move(state):
-            acumulated_value -= 10000
+def vertical(tuple, state):
+    accumulated_value = 0
+    for row in range(tuple[1], 7):
+        coordinate = (tuple[0], row)
+        if coordinate in state.moves:
+            accumulated_value += 100
+        if state.board.get(coordinate) == game.to_move(state):
+            accumulated_value += 1000
+        if state.board.get(coordinate) != game.to_move(state):
+            accumulated_value -= 10000
+    return accumulated_value
 
-    return acumulated_value
+
+def horizontal(tuple, state):
+    accumulated_value = 0
+    for column in range(tuple[0], 7):
+        coordinate = (column, tuple[1])
+        if coordinate in state.moves:
+            accumulated_value += 100
+        if state.board.get(coordinate) == game.to_move(state):
+            accumulated_value += 1000
+        if state.board.get(coordinate) != game.to_move(state):
+            accumulated_value -= 10000
+    return accumulated_value
 
 """
 def posibles_diagonales(state=None):
