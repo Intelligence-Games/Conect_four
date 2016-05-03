@@ -19,7 +19,7 @@ def foo_heuristic(state):
 
 
 def best_direction(tuple, state):
-    return horizontal(tuple, state) + vertical(tuple, state)
+    return horizontal(tuple, state) + vertical(tuple, state) + diagonal(tuple, state)
 
 
 def vertical(tuple, state):
@@ -47,18 +47,17 @@ def horizontal(tuple, state):
             accumulated_value -= 10000
     return accumulated_value
 
-"""
-def posibles_diagonales(state=None):
+
+def diagonal(tuple, state):
     acumulated_value = 0
 
-    for columna in range(1, 7):
-
-        if state.board.get((columna, fila)) == ".":
-            acumulated_value += 100
-        if state.board.get((columna, fila)) == game.to_move(state):
-            acumulated_value += 1000
-        if state.board.get((columna, fila)) != game.to_move(state):
-            acumulated_value -= 10000
+    for columna in range(tuple[0], 8):
+        for fila in range(tuple[1], 7):
+            if (columna + 1, fila + 1) in state.moves:
+                acumulated_value += 100
+            if state.board.get((tuple[0] + 1, tuple[1] + 1)) == game.to_move(state):
+                acumulated_value += 1000
+            if state.board.get((tuple[0] + 1, tuple[1] + 1)) == game.to_move(state):
+                acumulated_value -= 10000
 
     return acumulated_value
-"""
