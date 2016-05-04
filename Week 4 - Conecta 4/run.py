@@ -28,7 +28,6 @@ def choice_turn():
     choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina: ")
     computer = 'O' if choice == '0' else 'X'
 
-#
 # choice_level()
 # choice_turn()
 
