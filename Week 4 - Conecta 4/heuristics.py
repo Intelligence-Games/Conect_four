@@ -4,7 +4,6 @@ from connectfour import ConnectFour
 
 
 class Heuristics:
-
     def __init__(self):
         self.game = ConnectFour()
         self.values = {
@@ -29,37 +28,35 @@ class Heuristics:
         for column in range(1, 7):
             for row in range(1, 8):
                 if (column, row) in state.moves:
-                    result += self.__best_direction(coordinate=(column, row), state=state)
+                    result += self.__best_direction(column, row, state=state)
                     break
         return result
 
-    def __best_direction(self, coordinate, state):
-        return self.__horizontal(coordinate, state) \
-               + self.__vertical(coordinate, state) \
-               + self.__diagonal(coordinate, state) \
-               + self.__inverse_diagonal(coordinate, state)
+    def __best_direction(self, coordinate_x, coordinate_y, state):
+        return self.__horizontal(coordinate_x, coordinate_y, state) \
+               + self.__vertical(coordinate_x, coordinate_y, state) \
+               + self.__diagonal(coordinate_x, coordinate_y, state) \
+               + self.__inverse_diagonal(coordinate_x, coordinate_y, state)
 
-    def __calculate_in_row(self, player, coordinate):
+    def __calculate_in_row(self, player, coordinate_x, coordinate_y):
         in_row = 0
         if player is not None:
             index = 1
             while index < 4:
-                if self.board.get((coordinate[0] - index, coordinate[1])) == player:
+                if self.board.get((coordinate_x - index, coordinate_y)) == player:
                     in_row += 1
                 else:
                     break
                 index += 1
         return in_row
 
-    def __vertical(self, coordinate, state):
-        coordinate_x = coordinate[0]
-        coordinate_y = coordinate[1]
+    def __vertical(self, coordinate_x, coordinate_y, state):
 
         bottom_player = self.board.get((coordinate_x, coordinate_y - 1))
-        top_in_row = self.__calculate_in_row(player=bottom_player, coordinate=coordinate)
+        top_in_row = self.__calculate_in_row(bottom_player, coordinate_x, coordinate_y)
 
         top_player = self.board.get((coordinate_x, coordinate_y + 1))
-        bottom_in_row = self.__calculate_in_row(player=top_player, coordinate=coordinate)
+        bottom_in_row = self.__calculate_in_row(top_player, coordinate_x, coordinate_y)
 
         total_value = 0
         if bottom_player == self.game.to_move(state):
@@ -74,15 +71,13 @@ class Heuristics:
 
         return total_value
 
-    def __horizontal(self, coordinate, state):
-        coordinate_x = coordinate[0]
-        coordinate_y = coordinate[1]
+    def __horizontal(self, coordinate_x, coordinate_y, state):
 
         left_player = self.board.get((coordinate_x - 1, coordinate_y))
-        left_in_row = self.__calculate_in_row(player=left_player, coordinate=coordinate)
+        left_in_row = self.__calculate_in_row(left_player, coordinate_x, coordinate_y)
 
         right_player = self.board.get((coordinate_x + 1, coordinate_y))
-        right_in_row = self.__calculate_in_row(player=right_player, coordinate=coordinate)
+        right_in_row = self.__calculate_in_row(right_player, coordinate_x, coordinate_y)
 
         total_value = 0
         if left_player == self.game.to_move(state):
@@ -97,15 +92,13 @@ class Heuristics:
 
         return total_value
 
-    def __diagonal(self, coordinate, state):
-        coordinate_x = coordinate[0]
-        coordinate_y = coordinate[1]
+    def __diagonal(self, coordinate_x, coordinate_y, state):
 
         top_right_player = self.board.get((coordinate_x + 1, coordinate_y + 1))
-        top_right_in_row = self.__calculate_in_row(player=top_right_player, coordinate=coordinate)
+        top_right_in_row = self.__calculate_in_row(top_right_player, coordinate_x, coordinate_y)
 
         left_bottom_player = self.board.get((coordinate_x - 1, coordinate_y - 1))
-        left_bottom_in_row = self.__calculate_in_row(player=left_bottom_player, coordinate=coordinate)
+        left_bottom_in_row = self.__calculate_in_row(left_bottom_player, coordinate_x, coordinate_y)
 
         total_value = 0
         if left_bottom_player == self.game.to_move(state):
@@ -120,15 +113,13 @@ class Heuristics:
 
         return total_value
 
-    def __inverse_diagonal(self, coordinate, state):
-        coordinate_x = coordinate[0]
-        coordinate_y = coordinate[1]
+    def __inverse_diagonal(self, coordinate_x, coordinate_y, state):
 
         top_left_player = self.board.get((coordinate_x - 1, coordinate_y + 1))
-        top_left_in_row = self.__calculate_in_row(player=top_left_player, coordinate=coordinate)
+        top_left_in_row = self.__calculate_in_row(top_left_player, coordinate_x, coordinate_y)
 
         right_bottom_player = self.board.get((coordinate_x + 1, coordinate_y - 1))
-        right_bottom_in_row = self.__calculate_in_row(player=right_bottom_player, coordinate=coordinate)
+        right_bottom_in_row = self.__calculate_in_row(right_bottom_player, coordinate_x, coordinate_y)
 
         total_value = 0
         if top_left_player == self.game.to_move(state):
