@@ -42,20 +42,20 @@ class Heuristics:
     def __vertical(self, coordinate_x, coordinate_y):
 
         top_player = self.__get_player_at(coordinate_x, coordinate_y + 1)
-        top_in_row = self.__calculate_in_row(top_player, coordinate_x, coordinate_y)
+        top_in_row = self.__calculate_left_in_row(top_player, coordinate_x, coordinate_y)
 
         bottom_player = self.__get_player_at(coordinate_x, coordinate_y - 1)
-        bottom_in_row = self.__calculate_in_row(bottom_player, coordinate_x, coordinate_y)
+        bottom_in_row = self.__calculate_right_in_row(bottom_player, coordinate_x, coordinate_y)
 
         return self.__get_total_value(top_player, bottom_player, top_in_row, bottom_in_row)
 
     def __horizontal(self, coordinate_x, coordinate_y):
 
         left_player = self.__get_player_at(coordinate_x - 1, coordinate_y)
-        left_in_row = self.__calculate_in_row(left_player, coordinate_x, coordinate_y)
+        left_in_row = self.__calculate_left_in_row(left_player, coordinate_x, coordinate_y)
 
         right_player = self.__get_player_at(coordinate_x + 1, coordinate_y)
-        right_in_row = self.__calculate_in_row(right_player, coordinate_x, coordinate_y)
+        right_in_row = self.__calculate_right_in_row(right_player, coordinate_x, coordinate_y)
 
         total_value = self.__get_total_value(left_player, right_player, left_in_row, right_in_row)
 
@@ -64,10 +64,10 @@ class Heuristics:
     def __diagonal(self, coordinate_x, coordinate_y):
 
         left_bottom_player = self.__get_player_at(coordinate_x - 1, coordinate_y - 1)
-        left_bottom_in_row = self.__calculate_in_row(left_bottom_player, coordinate_x, coordinate_y)
+        left_bottom_in_row = self.__calculate_left_in_row(left_bottom_player, coordinate_x, coordinate_y)
 
         top_right_player = self.__get_player_at(coordinate_x + 1, coordinate_y + 1)
-        top_right_in_row = self.__calculate_in_row(top_right_player, coordinate_x, coordinate_y)
+        top_right_in_row = self.__calculate_right_in_row(top_right_player, coordinate_x, coordinate_y)
 
         total_value = self.__get_total_value(left_bottom_player, top_right_player, left_bottom_in_row, top_right_in_row)
 
@@ -76,10 +76,10 @@ class Heuristics:
     def __inverse_diagonal(self, coordinate_x, coordinate_y):
 
         top_left_player = self.__get_player_at(coordinate_x - 1, coordinate_y + 1)
-        top_left_in_row = self.__calculate_in_row(top_left_player, coordinate_x, coordinate_y)
+        top_left_in_row = self.__calculate_left_in_row(top_left_player, coordinate_x, coordinate_y)
 
         right_bottom_player = self.__get_player_at(coordinate_x + 1, coordinate_y - 1)
-        right_bottom_in_row = self.__calculate_in_row(right_bottom_player, coordinate_x, coordinate_y)
+        right_bottom_in_row = self.__calculate_right_in_row(right_bottom_player, coordinate_x, coordinate_y)
 
         total_value = self.__get_total_value(right_bottom_player, top_left_player, right_bottom_in_row, top_left_in_row)
 
@@ -88,12 +88,24 @@ class Heuristics:
     def __get_player_at(self, coordinate_x, coordinate_y):
         return self.state.board.get((coordinate_x, coordinate_y))
 
-    def __calculate_in_row(self, player, coordinate_x, coordinate_y):
+    def __calculate_left_in_row(self, player, coordinate_x, coordinate_y):
         in_row = 0
         if player is not None:
             index = 1
             while index < 4:
                 if self.__get_player_at(coordinate_x - index, coordinate_y) == player:
+                    in_row += 1
+                else:
+                    break
+                index += 1
+        return in_row
+
+    def __calculate_right_in_row(self, player, coordinate_x, coordinate_y):
+        in_row = 0
+        if player is not None:
+            index = 1
+            while index < 4:
+                if self.__get_player_at(coordinate_x + index, coordinate_y) == player:
                     in_row += 1
                 else:
                     break
