@@ -30,7 +30,7 @@ def choice_turn():
 
 #
 # choice_level()
-# choice_0 turn()
+# choice_turn()
 
 computer = "X"
 
