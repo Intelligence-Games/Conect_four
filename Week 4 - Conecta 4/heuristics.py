@@ -13,11 +13,13 @@ class Heuristics:
             2: 1000,
             3: 10000
         }
+        self.board = None
 
     def random_heuristic(self, state=None):
         return random.randint(-100, 100)
 
     def best_move_heuristic(self, state=None):
+        self.board = state.board
         if state.utility == 1:
             return state.utility * 10000000
         if state.utility == -1:
@@ -37,12 +39,12 @@ class Heuristics:
                + self.__diagonal(coordinate, state) \
                + self.__inverse_diagonal(coordinate, state)
 
-    def __calculate_in_row(self, player, board, coordinate):
+    def __calculate_in_row(self, player, coordinate):
         in_row = 0
         if player is not None:
             index = 1
             while index < 4:
-                if board.get((coordinate[0] - index, coordinate[1])) == player:
+                if self.board.get((coordinate[0] - index, coordinate[1])) == player:
                     in_row += 1
                 else:
                     break
@@ -50,15 +52,14 @@ class Heuristics:
         return in_row
 
     def __vertical(self, coordinate, state):
-        board = state.board
         coordinate_x = coordinate[0]
         coordinate_y = coordinate[1]
 
-        bottom_player = state.board.get((coordinate_x, coordinate_y - 1))
-        top_in_row = self.__calculate_in_row(player=bottom_player, board=board, coordinate=coordinate)
+        bottom_player = self.board.get((coordinate_x, coordinate_y - 1))
+        top_in_row = self.__calculate_in_row(player=bottom_player, coordinate=coordinate)
 
-        top_player = state.board.get((coordinate_x, coordinate_y + 1))
-        bottom_in_row = self.__calculate_in_row(player=top_player, board=board, coordinate=coordinate)
+        top_player = self.board.get((coordinate_x, coordinate_y + 1))
+        bottom_in_row = self.__calculate_in_row(player=top_player, coordinate=coordinate)
 
         total_value = 0
         if bottom_player == self.game.to_move(state):
@@ -74,15 +75,14 @@ class Heuristics:
         return total_value
 
     def __horizontal(self, coordinate, state):
-        board = state.board
         coordinate_x = coordinate[0]
         coordinate_y = coordinate[1]
 
-        left_player = board.get((coordinate_x - 1, coordinate_y))
-        left_in_row = self.__calculate_in_row(player=left_player, board=board, coordinate=coordinate)
+        left_player = self.board.get((coordinate_x - 1, coordinate_y))
+        left_in_row = self.__calculate_in_row(player=left_player, coordinate=coordinate)
 
-        right_player = board.get((coordinate_x + 1, coordinate_y))
-        right_in_row = self.__calculate_in_row(player=right_player, board=board, coordinate=coordinate)
+        right_player = self.board.get((coordinate_x + 1, coordinate_y))
+        right_in_row = self.__calculate_in_row(player=right_player, coordinate=coordinate)
 
         total_value = 0
         if left_player == self.game.to_move(state):
@@ -98,15 +98,14 @@ class Heuristics:
         return total_value
 
     def __diagonal(self, coordinate, state):
-        board = state.board
         coordinate_x = coordinate[0]
         coordinate_y = coordinate[1]
 
-        top_right_player = state.board.get((coordinate_x + 1, coordinate_y + 1))
-        top_right_in_row = self.__calculate_in_row(player=top_right_player, board=board, coordinate=coordinate)
+        top_right_player = self.board.get((coordinate_x + 1, coordinate_y + 1))
+        top_right_in_row = self.__calculate_in_row(player=top_right_player, coordinate=coordinate)
 
-        left_bottom_player = state.board.get((coordinate_x - 1, coordinate_y - 1))
-        left_bottom_in_row = self.__calculate_in_row(player=left_bottom_player, board=board, coordinate=coordinate)
+        left_bottom_player = self.board.get((coordinate_x - 1, coordinate_y - 1))
+        left_bottom_in_row = self.__calculate_in_row(player=left_bottom_player, coordinate=coordinate)
 
         total_value = 0
         if left_bottom_player == self.game.to_move(state):
@@ -122,15 +121,14 @@ class Heuristics:
         return total_value
 
     def __inverse_diagonal(self, coordinate, state):
-        board = state.board
         coordinate_x = coordinate[0]
         coordinate_y = coordinate[1]
 
-        top_left_player = state.board.get((coordinate_x - 1, coordinate_y + 1))
-        top_left_in_row = self.__calculate_in_row(player=top_left_player, board=board, coordinate=coordinate)
+        top_left_player = self.board.get((coordinate_x - 1, coordinate_y + 1))
+        top_left_in_row = self.__calculate_in_row(player=top_left_player, coordinate=coordinate)
 
-        right_bottom_player = state.board.get((coordinate_x + 1, coordinate_y - 1))
-        right_bottom_in_row = self.__calculate_in_row(player=right_bottom_player, board=board, coordinate=coordinate)
+        right_bottom_player = self.board.get((coordinate_x + 1, coordinate_y - 1))
+        right_bottom_in_row = self.__calculate_in_row(player=right_bottom_player, coordinate=coordinate)
 
         total_value = 0
         if top_left_player == self.game.to_move(state):
