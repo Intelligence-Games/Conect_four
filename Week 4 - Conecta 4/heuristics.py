@@ -1,4 +1,5 @@
 import random
+
 from connectfour import ConnectFour
 
 game = ConnectFour()
@@ -53,29 +54,17 @@ def calculate_in_row(player, board, coordinate):
 
 
 def vertical(coordinate, state):
-    index = 1
-    top_in_row = 0
-    bottom_in_row = 0
+    board = state.board
+    coordinate_x = coordinate[0]
+    coordinate_y = coordinate[1]
+
+    bottom_player = state.board.get((coordinate_x, coordinate_y - 1))
+    top_in_row = calculate_in_row(player=bottom_player, board=board, coordinate=coordinate)
+
+    top_player = state.board.get((coordinate_x, coordinate_y + 1))
+    bottom_in_row = calculate_in_row(player=top_player, board=board, coordinate=coordinate)
+
     total_value = 0
-
-    bottom_player = state.board.get((coordinate[0], coordinate[1] - 1))
-    if bottom_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0], coordinate[1] - index)) == bottom_player:
-                bottom_in_row += 1
-            else:
-                break
-            index += 1
-
-    index = 1
-    top_player = state.board.get((coordinate[0], coordinate[1] + 1))
-    if top_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0], coordinate[1] + index)) == top_player:
-                top_in_row += 1
-            else:
-                break
-            index += 1
     if bottom_player == game.to_move(state):
         total_value += values[bottom_in_row]
     else:
@@ -93,6 +82,7 @@ def horizontal(coordinate, state):
     board = state.board
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
+
     left_player = board.get((coordinate_x - 1, coordinate_y))
     left_in_row = calculate_in_row(player=left_player, board=board, coordinate=coordinate)
 
@@ -114,30 +104,17 @@ def horizontal(coordinate, state):
 
 
 def diagonal(coordinate, state):
-    index = 1
-    top_right_in_row = 0
-    left_bottom_in_row = 0
+    board = state.board
+    coordinate_x = coordinate[0]
+    coordinate_y = coordinate[1]
+
+    top_right_player = state.board.get((coordinate_x + 1, coordinate_y + 1))
+    top_right_in_row = calculate_in_row(player=top_right_player, board=board, coordinate=coordinate)
+
+    left_bottom_player = state.board.get((coordinate_x - 1, coordinate_y - 1))
+    left_bottom_in_row = calculate_in_row(player=left_bottom_player, board=board, coordinate=coordinate)
+
     total_value = 0
-
-    top_right_player = state.board.get((coordinate[0] + 1, coordinate[1] + 1))
-    if top_right_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] + index, coordinate[1] + index)) == top_right_player:
-                top_right_in_row += 1
-            else:
-                break
-            index += 1
-
-    index = 1
-    left_bottom_player = state.board.get((coordinate[0] - 1, coordinate[1] - 1))
-    if left_bottom_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] + index, coordinate[1])) == left_bottom_player:
-                left_bottom_in_row += 1
-            else:
-                break
-            index += 1
-
     if left_bottom_player == game.to_move(state):
         total_value += values[left_bottom_in_row]
     else:
@@ -152,30 +129,17 @@ def diagonal(coordinate, state):
 
 
 def inverse_diagonal(coordinate, state):
-    index = 1
-    top_left_in_row = 0
-    right_bottom_in_row = 0
+    board = state.board
+    coordinate_x = coordinate[0]
+    coordinate_y = coordinate[1]
+
+    top_left_player = state.board.get((coordinate_x - 1, coordinate_y + 1))
+    top_left_in_row = calculate_in_row(player=top_left_player, board=board, coordinate=coordinate)
+
+    right_bottom_player = state.board.get((coordinate_x + 1, coordinate_y - 1))
+    right_bottom_in_row = calculate_in_row(player=right_bottom_player, board=board, coordinate=coordinate)
+
     total_value = 0
-
-    top_left_player = state.board.get((coordinate[0] - 1, coordinate[1] + 1))
-    if top_left_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] - index, coordinate[1] + index)) == top_left_player:
-                top_left_in_row += 1
-            else:
-                break
-            index += 1
-
-    index = 1
-    right_bottom_player = state.board.get((coordinate[0] + 1, coordinate[1] - 1))
-    if right_bottom_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] + index, coordinate[1] - index)) == right_bottom_player:
-                right_bottom_in_row += 1
-            else:
-                break
-            index += 1
-
     if top_left_player == game.to_move(state):
         total_value += values[top_left_in_row]
     else:
