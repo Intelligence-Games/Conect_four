@@ -91,10 +91,12 @@ def vertical(coordinate, state):
 
 def horizontal(coordinate, state):
     board = state.board
-    left_player = board.get((coordinate[0] - 1, coordinate[1]))
+    coordinate_x = coordinate[0]
+    coordinate_y = coordinate[1]
+    left_player = board.get((coordinate_x - 1, coordinate_y))
     left_in_row = calculate_in_row(player=left_player, board=board, coordinate=coordinate)
 
-    right_player = board.get((coordinate[0] + 1, coordinate[1]))
+    right_player = board.get((coordinate_x + 1, coordinate_y))
     right_in_row = calculate_in_row(player=right_player, board=board, coordinate=coordinate)
 
     total_value = 0
