@@ -1,6 +1,6 @@
 import games
 from connectfour import ConnectFour
-from heuristics import random_heuristic, best_direction, foo_heuristic
+from heuristics import random_heuristic, best_direction, best_move_heuristic
 
 # game = games.TicTacToe(h=3,v=3,k=3)
 game = ConnectFour()
@@ -8,12 +8,29 @@ game = ConnectFour()
 state = game.initial
 
 
-def choice_menu():
+def choice_level():
+    global heuristic
+    global depth
+    level = raw_input("Elije la dificultad: 1 -> facil, 2 -> medio, 3 -> dificil")
+    if level == '1':
+        heuristic = random_heuristic
+        depth = None
+    elif level == '2':
+        heuristic = best_move_heuristic
+        depth = None
+    else:
+        heuristic = best_move_heuristic
+        depth = 4
+
+
+def choice_turn():
     global computer
     choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina")
     computer = 'O' if choice == '0' else 'X'
 
-choice_menu()
+
+choice_level()
+choice_turn()
 
 while True:
 
@@ -36,7 +53,7 @@ while True:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
         # move = games.alphabeta_full_search(state, game)
-        move = games.alphabeta_search(state, game, eval_fn=foo_heuristic)
+        move = games.alphabeta_search(state, game, d=depth, eval_fn=heuristic)
 
         state = game.make_move(move, state)
         computer = 'O'

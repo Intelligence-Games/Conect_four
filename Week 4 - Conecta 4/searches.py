@@ -63,7 +63,7 @@ def alphabeta_full_search(state, game):
     return action
 
 
-def alphabeta_search(state, game, d=4, cutoff_test=None, eval_fn=None):
+def alphabeta_search(state, game, d=2, cutoff_test=None, eval_fn=None):
     """Search game to determine best action; use alpha-beta pruning.
     This version cuts off search and uses an evaluation function."""
 
