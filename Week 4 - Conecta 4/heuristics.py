@@ -39,6 +39,19 @@ values = {
 }
 
 
+def calculate_in_row(player, board, coordinate):
+    in_row = 0
+    if player is not None:
+        index = 1
+        while index < 4:
+            if board.get((coordinate[0] - index, coordinate[1])) == player:
+                in_row += 1
+            else:
+                break
+            index += 1
+    return in_row
+
+
 def vertical(coordinate, state):
     index = 1
     top_in_row = 0
@@ -77,30 +90,14 @@ def vertical(coordinate, state):
 
 
 def horizontal(coordinate, state):
-    index = 1
-    left_in_row = 0
-    right_in_row = 0
+    board = state.board
+    left_player = board.get((coordinate[0] - 1, coordinate[1]))
+    left_in_row = calculate_in_row(player=left_player, board=board, coordinate=coordinate)
+
+    right_player = board.get((coordinate[0] + 1, coordinate[1]))
+    right_in_row = calculate_in_row(player=right_player, board=board, coordinate=coordinate)
+
     total_value = 0
-
-    left_player = state.board.get((coordinate[0] - 1, coordinate[1]))
-    if left_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] - index, coordinate[1])) == left_player:
-                left_in_row += 1
-            else:
-                break
-            index += 1
-
-    index = 1
-    right_player = state.board.get((coordinate[0] + 1, coordinate[1]))
-    if right_player is not None:
-        while index < 4:
-            if state.board.get((coordinate[0] + index, coordinate[1])) == right_player:
-                right_in_row += 1
-            else:
-                break
-            index += 1
-
     if left_player == game.to_move(state):
         total_value += values[left_in_row]
     else:
