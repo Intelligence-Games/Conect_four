@@ -11,7 +11,7 @@ state = game.initial
 def choice_level():
     global heuristic
     global depth
-    level = raw_input("Elije la dificultad: 1 -> facil, 2 -> medio, 3 -> dificil")
+    level = raw_input("Elije la dificultad: 1 -> facil, 2 -> medio, 3 -> dificil: ")
     if level == '1':
         heuristic = random_heuristic
         depth = None
@@ -25,12 +25,14 @@ def choice_level():
 
 def choice_turn():
     global computer
-    choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina")
+    choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina: ")
     computer = 'O' if choice == '0' else 'X'
 
+#
+# choice_level()
+# choice_0 turn()
 
-choice_level()
-choice_turn()
+computer = "X"
 
 while True:
 
@@ -53,7 +55,7 @@ while True:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
         # move = games.alphabeta_full_search(state, game)
-        move = games.alphabeta_search(state, game, d=depth, eval_fn=heuristic)
+        move = games.alphabeta_search(state, game, d=4, eval_fn=best_move_heuristic)
 
         state = game.make_move(move, state)
         computer = 'O'

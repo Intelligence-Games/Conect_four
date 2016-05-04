@@ -8,8 +8,14 @@ def random_heuristic(state=None):
     return random.randint(-100, 100)
 
 
-def foo_heuristic(state):
+def best_move_heuristic(state):
     result = 0
+
+    if state.utility == 1:
+        return state.utility * 10000000
+    if state.utility == -1:
+        return state.utility * 5000000
+
     for column in range(1, 7):
         for row in range(1, 8):
             if (column, row) in state.moves:
@@ -19,45 +25,50 @@ def foo_heuristic(state):
 
 
 def best_direction(tuple, state):
-    return horizontal(tuple, state) + vertical(tuple, state) + diagonal(tuple, state)
+    return horizontal(tuple, state)
 
 
-def vertical(tuple, state):
-    accumulated_value = 0
-    for row in range(tuple[1], 7):
-        coordinate = (tuple[0], row)
-        if coordinate in state.moves:
-            accumulated_value += 100
-        if state.board.get(coordinate) == game.to_move(state):
-            accumulated_value += 1000
-        if state.board.get(coordinate) != game.to_move(state):
-            accumulated_value -= 10000
-    return accumulated_value
+values = {
+    0: 0,
+    1: 100,
+    2: 1000,
+    3: 10000
+}
 
 
 def horizontal(tuple, state):
-    accumulated_value = 0
-    for column in range(tuple[0], 7):
-        coordinate = (column, tuple[1])
-        if coordinate in state.moves:
-            accumulated_value += 100
-        if state.board.get(coordinate) == game.to_move(state):
-            accumulated_value += 1000
-        if state.board.get(coordinate) != game.to_move(state):
-            accumulated_value -= 10000
-    return accumulated_value
+    index = 1
+    left_in_row = 0
+    right_in_row = 0
+    total_value = 0
 
+    left_player = state.board.get((tuple[0] - 1, tuple[1]))
+    if left_player is not None:
+        while index < 4:
+            if state.board.get((tuple[0] - index, tuple[1])) == left_player:
+                left_in_row += 1
+            else:
+                break
+            index += 1
 
-def diagonal(tuple, state):
-    acumulated_value = 0
+    index = 1
+    right_player = state.board.get((tuple[0] + 1, tuple[1]))
+    if right_player is not None:
+        while index < 4:
+            if state.board.get((tuple[0] + index, tuple[1])) == game.to_move(state):
+                right_in_row += 1
+            else:
+                break
+            index += 1
 
-    for columna in range(tuple[0], 8):
-        for fila in range(tuple[1], 7):
-            if (columna + 1, fila + 1) in state.moves:
-                acumulated_value += 100
-            if state.board.get((tuple[0] + 1, tuple[1] + 1)) == game.to_move(state):
-                acumulated_value += 1000
-            if state.board.get((tuple[0] + 1, tuple[1] + 1)) == game.to_move(state):
-                acumulated_value -= 10000
+    if left_player == game.to_move(state):
+        total_value += values[left_in_row]
+    else:
+        total_value -= values[left_in_row]
 
-    return acumulated_value
+    if right_player == game.to_move(state):
+        total_value += values[right_in_row]
+    else:
+        total_value -= values[right_in_row]
+
+    return total_value
