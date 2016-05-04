@@ -7,13 +7,20 @@ game = ConnectFour()
 
 state = game.initial
 
-player = 'X'
+
+def choice_menu():
+    global computer
+    choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina")
+    computer = 'O' if choice == '0' else 'X'
+
+choice_menu()
 
 while True:
+
     print "Jugador a mover:", game.to_move(state)
     game.display(state)
 
-    if player == 'O':
+    if computer == 'O':
         col_str = raw_input("Movimiento: ")
         coor = int(str(col_str).strip())
         x = coor
@@ -24,7 +31,7 @@ while True:
                 y = lm[1]
 
         state = game.make_move((x, y), state)
-        player = 'X'
+        computer = 'X'
     else:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
@@ -32,7 +39,7 @@ while True:
         move = games.alphabeta_search(state, game, eval_fn=foo_heuristic)
 
         state = game.make_move(move, state)
-        player = 'O'
+        computer = 'O'
     print "-------------------"
     if game.terminal_test(state):
         game.display(state)
