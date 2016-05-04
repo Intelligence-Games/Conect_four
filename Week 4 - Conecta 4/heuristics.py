@@ -38,25 +38,13 @@ class Heuristics:
                + self.__diagonal(coordinate_x, coordinate_y, state) \
                + self.__inverse_diagonal(coordinate_x, coordinate_y, state)
 
-    def __calculate_in_row(self, player, coordinate_x, coordinate_y):
-        in_row = 0
-        if player is not None:
-            index = 1
-            while index < 4:
-                if self.board.get((coordinate_x - index, coordinate_y)) == player:
-                    in_row += 1
-                else:
-                    break
-                index += 1
-        return in_row
-
     def __vertical(self, coordinate_x, coordinate_y, state):
 
-        bottom_player = self.board.get((coordinate_x, coordinate_y - 1))
-        top_in_row = self.__calculate_in_row(bottom_player, coordinate_x, coordinate_y)
+        bottom_player = self.__get_player_at(coordinate_x, coordinate_y)
+        top_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         top_player = self.board.get((coordinate_x, coordinate_y + 1))
-        bottom_in_row = self.__calculate_in_row(top_player, coordinate_x, coordinate_y)
+        bottom_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         total_value = 0
         if bottom_player == self.game.to_move(state):
@@ -74,10 +62,10 @@ class Heuristics:
     def __horizontal(self, coordinate_x, coordinate_y, state):
 
         left_player = self.board.get((coordinate_x - 1, coordinate_y))
-        left_in_row = self.__calculate_in_row(left_player, coordinate_x, coordinate_y)
+        left_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         right_player = self.board.get((coordinate_x + 1, coordinate_y))
-        right_in_row = self.__calculate_in_row(right_player, coordinate_x, coordinate_y)
+        right_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         total_value = 0
         if left_player == self.game.to_move(state):
@@ -95,10 +83,10 @@ class Heuristics:
     def __diagonal(self, coordinate_x, coordinate_y, state):
 
         top_right_player = self.board.get((coordinate_x + 1, coordinate_y + 1))
-        top_right_in_row = self.__calculate_in_row(top_right_player, coordinate_x, coordinate_y)
+        top_right_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
-        left_bottom_player = self.board.get((coordinate_x - 1, coordinate_y - 1))
-        left_bottom_in_row = self.__calculate_in_row(left_bottom_player, coordinate_x, coordinate_y)
+        left_bottom_player = self.__get_player_at(coordinate_x - 1, coordinate_y)
+        left_bottom_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         total_value = 0
         if left_bottom_player == self.game.to_move(state):
@@ -116,10 +104,10 @@ class Heuristics:
     def __inverse_diagonal(self, coordinate_x, coordinate_y, state):
 
         top_left_player = self.board.get((coordinate_x - 1, coordinate_y + 1))
-        top_left_in_row = self.__calculate_in_row(top_left_player, coordinate_x, coordinate_y)
+        top_left_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
-        right_bottom_player = self.board.get((coordinate_x + 1, coordinate_y - 1))
-        right_bottom_in_row = self.__calculate_in_row(right_bottom_player, coordinate_x, coordinate_y)
+        right_bottom_player = self.__get_player_at(coordinate_x + 1, coordinate_y)
+        right_bottom_in_row = self.__calculate_in_row(coordinate_x, coordinate_y)
 
         total_value = 0
         if top_left_player == self.game.to_move(state):
@@ -133,3 +121,20 @@ class Heuristics:
             total_value -= self.values[right_bottom_in_row]
 
         return total_value
+
+    def __calculate_in_row(self, coordinate_x, coordinate_y):
+        in_row = 0
+        player = self.__get_player_at(coordinate_x, coordinate_y)
+        if player is not None:
+            index = 1
+            while index < 4:
+                if self.board.get((coordinate_x - index, coordinate_y)) == player:
+                    in_row += 1
+                else:
+                    break
+                index += 1
+        return in_row
+
+    def __get_player_at(self, coordinate_x, coordinate_y):
+        bottom_player = self.board.get((coordinate_x, coordinate_y - 1))
+        return bottom_player
