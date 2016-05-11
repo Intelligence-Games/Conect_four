@@ -3,7 +3,20 @@ import random
 from connectfour import ConnectFour
 
 
+def memoize(heuristica):
+    memory = {}
+
+    def helper(state):
+        if str(state.board) not in memory:
+            memory[str(state.board)] = heuristica(state=state)
+        return memory[str(state.board)]
+
+    return helper
+
 class Heuristics:
+
+
+
     def __init__(self):
         self.game = ConnectFour()
         self.values = {
@@ -16,6 +29,7 @@ class Heuristics:
 
     def random_heuristic(self, state=None):
         return random.randint(-100, 100)
+
 
     def best_move_heuristic(self, state=None):
         self.state = state
@@ -90,26 +104,31 @@ class Heuristics:
 
     def __calculate_left_in_row(self, player, coordinate_x, coordinate_y):
         in_row = 0
-        if player is not None:
-            index = 1
-            while index < 4:
-                if self.__get_player_at(coordinate_x - index, coordinate_y) == player:
-                    in_row += 1
+        index = 1
+        while index < 4:
+            if self.__get_player_at(coordinate_x - index, coordinate_y) == player:
+                in_row += 1
+            else:
+                if (coordinate_x - index, coordinate_y) in self.state.moves:
+                    pass
                 else:
                     break
-                index += 1
+            index += 1
         return in_row
 
     def __calculate_right_in_row(self, player, coordinate_x, coordinate_y):
         in_row = 0
-        if player is not None:
-            index = 1
-            while index < 4:
-                if self.__get_player_at(coordinate_x + index, coordinate_y) == player:
-                    in_row += 1
+
+        index = 1
+        while index < 4:
+            if self.__get_player_at(coordinate_x + index, coordinate_y) == player:
+                in_row += 1
+            else:
+                if (coordinate_x + index, coordinate_y) in self.state.moves:
+                    pass
                 else:
                     break
-                index += 1
+            index += 1
         return in_row
 
     def __get_total_value(self, left_player, right_player, left_in_row, right_in_row):
@@ -123,3 +142,6 @@ class Heuristics:
         else:
             total_value -= self.values[left_in_row]
         return total_value
+
+
+    """ hay que contemplar si tenemos XX.X  o O.OO    -- > HEcho en horizontal"""
