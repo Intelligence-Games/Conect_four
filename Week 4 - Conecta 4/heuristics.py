@@ -9,6 +9,18 @@ def random_heuristic(state=None):
     return random.randint(-100, 100)
 
 
+def memoize(heuristic):
+    memory = {}
+
+    def helper(state):
+        if str(state.board) not in memory:
+            memory[str(state.board)] = heuristic(state)
+        return memory[str(state.board)]
+
+    return helper
+
+
+@memoize
 def best_move_heuristic(state=None):
     result = 0
 
