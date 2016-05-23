@@ -40,7 +40,8 @@ values = {
 }
 
 
-def calculate_in_row(player, board, coordinate):
+def calculate_in_row(player, state, coordinate):
+    board = state.board
     in_row = 0
     if player is not None:
         index = 1
@@ -48,21 +49,23 @@ def calculate_in_row(player, board, coordinate):
             if board.get((coordinate[0] - index, coordinate[1])) == player:
                 in_row += 1
             else:
-                break
+                if (coordinate[0] - index, coordinate[1]) in state.moves:
+                    pass
+                else:
+                    break
             index += 1
     return in_row
 
 
 def vertical(coordinate, state):
-    board = state.board
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
 
     bottom_player = state.board.get((coordinate_x, coordinate_y - 1))
-    top_in_row = calculate_in_row(player=bottom_player, board=board, coordinate=coordinate)
+    top_in_row = calculate_in_row(player=bottom_player, state=state, coordinate=coordinate)
 
     top_player = state.board.get((coordinate_x, coordinate_y + 1))
-    bottom_in_row = calculate_in_row(player=top_player, board=board, coordinate=coordinate)
+    bottom_in_row = calculate_in_row(player=top_player, state=state, coordinate=coordinate)
 
     total_value = 0
     if bottom_player == game.to_move(state):
@@ -79,15 +82,14 @@ def vertical(coordinate, state):
 
 
 def horizontal(coordinate, state):
-    board = state.board
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
 
-    left_player = board.get((coordinate_x - 1, coordinate_y))
-    left_in_row = calculate_in_row(player=left_player, board=board, coordinate=coordinate)
+    left_player = state.board.get((coordinate_x - 1, coordinate_y))
+    left_in_row = calculate_in_row(player=left_player, state=state, coordinate=coordinate)
 
-    right_player = board.get((coordinate_x + 1, coordinate_y))
-    right_in_row = calculate_in_row(player=right_player, board=board, coordinate=coordinate)
+    right_player = state.board.get((coordinate_x + 1, coordinate_y))
+    right_in_row = calculate_in_row(player=right_player, state=state, coordinate=coordinate)
 
     total_value = 0
     if left_player == game.to_move(state):
@@ -104,15 +106,14 @@ def horizontal(coordinate, state):
 
 
 def diagonal(coordinate, state):
-    board = state.board
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
 
     top_right_player = state.board.get((coordinate_x + 1, coordinate_y + 1))
-    top_right_in_row = calculate_in_row(player=top_right_player, board=board, coordinate=coordinate)
+    top_right_in_row = calculate_in_row(player=top_right_player, state=state, coordinate=coordinate)
 
     left_bottom_player = state.board.get((coordinate_x - 1, coordinate_y - 1))
-    left_bottom_in_row = calculate_in_row(player=left_bottom_player, board=board, coordinate=coordinate)
+    left_bottom_in_row = calculate_in_row(player=left_bottom_player, state=state, coordinate=coordinate)
 
     total_value = 0
     if left_bottom_player == game.to_move(state):
@@ -129,15 +130,14 @@ def diagonal(coordinate, state):
 
 
 def inverse_diagonal(coordinate, state):
-    board = state.board
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
 
     top_left_player = state.board.get((coordinate_x - 1, coordinate_y + 1))
-    top_left_in_row = calculate_in_row(player=top_left_player, board=board, coordinate=coordinate)
+    top_left_in_row = calculate_in_row(player=top_left_player, state=state, coordinate=coordinate)
 
     right_bottom_player = state.board.get((coordinate_x + 1, coordinate_y - 1))
-    right_bottom_in_row = calculate_in_row(player=right_bottom_player, board=board, coordinate=coordinate)
+    right_bottom_in_row = calculate_in_row(player=right_bottom_player, state=state, coordinate=coordinate)
 
     total_value = 0
     if top_left_player == game.to_move(state):
