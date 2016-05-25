@@ -52,32 +52,15 @@ values = {
 }
 
 
-def calculate_in_row(player, state, coordinate):
-    board = state.board
-    in_row = 0
-    if player is not None:
-        index = 1
-        while index < 4:
-            if board.get((coordinate[0] - index, coordinate[1])) == player:
-                in_row += 1
-            else:
-                if (coordinate[0] - index, coordinate[1]) in state.moves:
-                    pass
-                else:
-                    break
-            index += 1
-    return in_row
-
-
 def vertical(coordinate, state):
     coordinate_x = coordinate[0]
     coordinate_y = coordinate[1]
 
     bottom_player = state.board.get((coordinate_x, coordinate_y - 1))
-    top_in_row = calculate_in_row(player=bottom_player, state=state, coordinate=coordinate)
+    bottom_in_row = calculate_in_row(player=bottom_player, state=state, coordinate=coordinate)
 
     top_player = state.board.get((coordinate_x, coordinate_y + 1))
-    bottom_in_row = calculate_in_row(player=top_player, state=state, coordinate=coordinate)
+    top_in_row = calculate_in_row(player=top_player, state=state, coordinate=coordinate)
 
     total_value = 0
     if bottom_player == game.to_move(state):
@@ -163,3 +146,19 @@ def inverse_diagonal(coordinate, state):
         total_value -= values[right_bottom_in_row]
 
     return total_value
+
+def calculate_in_row(player, state, coordinate):
+    board = state.board
+    in_row = 0
+    if player is not None:
+        index = 1
+        while index < 4:
+            if board.get((coordinate[0] - index, coordinate[1])) == player:
+                in_row += 1
+            else:
+                if (coordinate[0] - index, coordinate[1]) in state.moves:
+                    pass
+                else:
+                    break
+            index += 1
+    return in_row
