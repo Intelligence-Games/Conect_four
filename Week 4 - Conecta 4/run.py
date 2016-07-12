@@ -25,13 +25,11 @@ def choice_level():
 
 def choice_turn():
     global computer
-    choice = raw_input("Elije quien empieza: 0 -> tu, 1 -> maquina: ")
-    computer = 'O' if choice == '0' else 'X'
+    choice = raw_input("Elije ficha: 0 -> O, 1 -> X = ")
+    computer = 'X' if choice == '0' else 'O'
 
-# choice_level()
-# choice_turn()
-
-computer = "X"
+choice_level()
+choice_turn()
 
 while True:
 
@@ -54,7 +52,7 @@ while True:
         print "Thinking..."
         # move = games.minimax_decision(state, game)
         # move = games.alphabeta_full_search(state, game)
-        move = games.alphabeta_search(state, game, d=4, eval_fn=best_move_heuristic)
+        move = games.alphabeta_search(state, game, depth, eval_fn=heuristic)
 
         state = game.make_move(move, state)
         computer = 'O'

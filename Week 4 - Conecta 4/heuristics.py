@@ -53,99 +53,57 @@ values = {
 
 
 def vertical(coordinate, state):
-    coordinate_x = coordinate[0]
-    coordinate_y = coordinate[1]
 
-    bottom_player = state.board.get((coordinate_x, coordinate_y - 1))
+    bottom_player = state.board.get((coordinate[0], coordinate[1] - 1))
     bottom_in_row = calculate_in_row(player=bottom_player, state=state, coordinate=coordinate)
 
-    top_player = state.board.get((coordinate_x, coordinate_y + 1))
+    top_player = state.board.get((coordinate[0], coordinate[1] + 1))
     top_in_row = calculate_in_row(player=top_player, state=state, coordinate=coordinate)
 
-    total_value = 0
-    if bottom_player == game.to_move(state):
-        total_value += values[bottom_in_row]
-    else:
-        total_value -= values[bottom_in_row]
+    bottom_value = values[bottom_in_row] if (bottom_player == game.to_move(state)) else -values[bottom_in_row]
+    top_value = values[top_in_row] if (top_player == game.to_move(state)) else -values[top_in_row]
 
-    if top_player == game.to_move(state):
-        total_value += values[top_in_row]
-    else:
-        total_value -= values[top_in_row]
-
-    return total_value
+    return bottom_value + top_value
 
 
 def horizontal(coordinate, state):
-    coordinate_x = coordinate[0]
-    coordinate_y = coordinate[1]
-
-    left_player = state.board.get((coordinate_x - 1, coordinate_y))
+    left_player = state.board.get((coordinate[0] - 1, coordinate[1]))
     left_in_row = calculate_in_row(player=left_player, state=state, coordinate=coordinate)
 
-    right_player = state.board.get((coordinate_x + 1, coordinate_y))
+    right_player = state.board.get((coordinate[0] + 1, coordinate[1]))
     right_in_row = calculate_in_row(player=right_player, state=state, coordinate=coordinate)
 
-    total_value = 0
-    if left_player == game.to_move(state):
-        total_value += values[left_in_row]
-    else:
-        total_value -= values[left_in_row]
+    left_value = values[left_in_row] if (left_player == game.to_move(state)) else -values[left_in_row]
+    right_value = values[right_in_row] if (right_player == game.to_move(state)) else -values[right_in_row]
 
-    if right_player == game.to_move(state):
-        total_value += values[right_in_row]
-    else:
-        total_value -= values[right_in_row]
-
-    return total_value
+    return left_value + right_value
 
 
 def diagonal(coordinate, state):
-    coordinate_x = coordinate[0]
-    coordinate_y = coordinate[1]
-
-    top_right_player = state.board.get((coordinate_x + 1, coordinate_y + 1))
+    top_right_player = state.board.get((coordinate[0] + 1, coordinate[1] + 1))
     top_right_in_row = calculate_in_row(player=top_right_player, state=state, coordinate=coordinate)
 
-    left_bottom_player = state.board.get((coordinate_x - 1, coordinate_y - 1))
+    left_bottom_player = state.board.get((coordinate[0] - 1, coordinate[1] - 1))
     left_bottom_in_row = calculate_in_row(player=left_bottom_player, state=state, coordinate=coordinate)
 
-    total_value = 0
-    if left_bottom_player == game.to_move(state):
-        total_value += values[left_bottom_in_row]
-    else:
-        total_value -= values[left_bottom_in_row]
+    left_bottom_value = values[left_bottom_in_row] if (left_bottom_player == game.to_move(state)) else -values[left_bottom_in_row]
+    top_right_value = values[top_right_in_row] if (top_right_player == game.to_move(state)) else -values[top_right_in_row]
 
-    if top_right_player == game.to_move(state):
-        total_value += values[top_right_in_row]
-    else:
-        total_value -= values[top_right_in_row]
-
-    return total_value
+    return left_bottom_value + top_right_value
 
 
 def inverse_diagonal(coordinate, state):
-    coordinate_x = coordinate[0]
-    coordinate_y = coordinate[1]
-
-    top_left_player = state.board.get((coordinate_x - 1, coordinate_y + 1))
+    top_left_player = state.board.get((coordinate[0] - 1, coordinate[1] + 1))
     top_left_in_row = calculate_in_row(player=top_left_player, state=state, coordinate=coordinate)
 
-    right_bottom_player = state.board.get((coordinate_x + 1, coordinate_y - 1))
+    right_bottom_player = state.board.get((coordinate[0] + 1, coordinate[1] - 1))
     right_bottom_in_row = calculate_in_row(player=right_bottom_player, state=state, coordinate=coordinate)
 
-    total_value = 0
-    if top_left_player == game.to_move(state):
-        total_value += values[top_left_in_row]
-    else:
-        total_value -= values[top_left_in_row]
+    top_left_value = values[top_left_in_row] if (top_left_player == game.to_move(state)) else values[top_left_in_row]
+    right_bottom_value = values[right_bottom_in_row] if (right_bottom_player == game.to_move(state)) else -values[right_bottom_in_row]
 
-    if right_bottom_player == game.to_move(state):
-        total_value += values[right_bottom_in_row]
-    else:
-        total_value -= values[right_bottom_in_row]
+    return top_left_value + right_bottom_value
 
-    return total_value
 
 def calculate_in_row(player, state, coordinate):
     board = state.board
@@ -153,7 +111,14 @@ def calculate_in_row(player, state, coordinate):
     if player is not None:
         index = 1
         while index < 4:
-            if board.get((coordinate[0] - index, coordinate[1])) == player:
+            if board.get((coordinate[0] - index, coordinate[1])) == player or \
+                            board.get((coordinate[0] + index, coordinate[1])) == player or \
+                            board.get((coordinate[0], coordinate[1] - index)) == player or \
+                            board.get((coordinate[0], coordinate[1] + index)) == player or \
+                            board.get((coordinate[0] + index, coordinate[1] - index)) == player or \
+                            board.get((coordinate[0] - index, coordinate[1] + index)) == player or \
+                            board.get((coordinate[0] + index, coordinate[1] + index)) == player or \
+                            board.get((coordinate[0] - index, coordinate[1] - index)) == player:
                 in_row += 1
             else:
                 if (coordinate[0] - index, coordinate[1]) in state.moves:
