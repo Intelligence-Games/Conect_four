@@ -52,57 +52,39 @@ values = {
 }
 
 
+def calculate_neighbours(coordinate, state, action):
+    player = state.board.get(action(coordinate))
+    in_row = calculate_in_row(player=player, state=state, coordinate=coordinate)
+
+    player_value = values[in_row] if (player == game.to_move(state)) else -values[in_row]
+    return player_value
+
+
 def vertical(coordinate, state):
-
-    bottom_player = state.board.get((coordinate[0], coordinate[1] - 1))
-    bottom_in_row = calculate_in_row(player=bottom_player, state=state, coordinate=coordinate)
-
-    top_player = state.board.get((coordinate[0], coordinate[1] + 1))
-    top_in_row = calculate_in_row(player=top_player, state=state, coordinate=coordinate)
-
-    bottom_value = values[bottom_in_row] if (bottom_player == game.to_move(state)) else -values[bottom_in_row]
-    top_value = values[top_in_row] if (top_player == game.to_move(state)) else -values[top_in_row]
-
-    return bottom_value + top_value
+    bottom = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0], coordinate[1] - 1))
+    top = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0], coordinate[1] + 1))
+    return bottom + top
 
 
 def horizontal(coordinate, state):
-    left_player = state.board.get((coordinate[0] - 1, coordinate[1]))
-    left_in_row = calculate_in_row(player=left_player, state=state, coordinate=coordinate)
-
-    right_player = state.board.get((coordinate[0] + 1, coordinate[1]))
-    right_in_row = calculate_in_row(player=right_player, state=state, coordinate=coordinate)
-
-    left_value = values[left_in_row] if (left_player == game.to_move(state)) else -values[left_in_row]
-    right_value = values[right_in_row] if (right_player == game.to_move(state)) else -values[right_in_row]
-
-    return left_value + right_value
+    right = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0]+1, coordinate[1]))
+    left = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0]-1, coordinate[1]))
+    return right + left
 
 
 def diagonal(coordinate, state):
-    top_right_player = state.board.get((coordinate[0] + 1, coordinate[1] + 1))
-    top_right_in_row = calculate_in_row(player=top_right_player, state=state, coordinate=coordinate)
-
-    left_bottom_player = state.board.get((coordinate[0] - 1, coordinate[1] - 1))
-    left_bottom_in_row = calculate_in_row(player=left_bottom_player, state=state, coordinate=coordinate)
-
-    left_bottom_value = values[left_bottom_in_row] if (left_bottom_player == game.to_move(state)) else -values[left_bottom_in_row]
-    top_right_value = values[top_right_in_row] if (top_right_player == game.to_move(state)) else -values[top_right_in_row]
-
-    return left_bottom_value + top_right_value
+    top_right = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0] + 1, coordinate[1] + 1))
+    bottom_left = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0] - 1, coordinate[1] - 1))
+    return top_right + bottom_left
 
 
 def inverse_diagonal(coordinate, state):
-    top_left_player = state.board.get((coordinate[0] - 1, coordinate[1] + 1))
-    top_left_in_row = calculate_in_row(player=top_left_player, state=state, coordinate=coordinate)
 
-    right_bottom_player = state.board.get((coordinate[0] + 1, coordinate[1] - 1))
-    right_bottom_in_row = calculate_in_row(player=right_bottom_player, state=state, coordinate=coordinate)
+    top_left = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0] - 1, coordinate[1] + 1))
+    bottom_right = calculate_neighbours(coordinate, state, lambda coordinate_parameter: (coordinate[0] + 1, coordinate[1] - 1))
+    return top_left + bottom_right
 
-    top_left_value = values[top_left_in_row] if (top_left_player == game.to_move(state)) else values[top_left_in_row]
-    right_bottom_value = values[right_bottom_in_row] if (right_bottom_player == game.to_move(state)) else -values[right_bottom_in_row]
 
-    return top_left_value + right_bottom_value
 
 
 def calculate_in_row(player, state, coordinate):
